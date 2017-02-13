@@ -1,0 +1,3 @@
+TASK com.yuyh.sprintnba id=381
+  ACTIVITY com.yuyh.sprintnba/.ui.HomeActivity 439a3a18 pid=26581
+    Failure while dumping the activity: java.io.IOException: Timeout

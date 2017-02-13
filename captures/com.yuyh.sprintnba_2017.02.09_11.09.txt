@@ -1,0 +1,4 @@
+Applications Memory Usage (kB):
+Uptime: 704175903 Realtime: 937257331
+
+** MEMINFO in pid 26581 [com.yuyh.sprintnba] **
