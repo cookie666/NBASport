@@ -40,7 +40,6 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         init();
     }
 
-
     protected abstract void injectActivity(ActivityComponent activityComponent);
     protected abstract int getContentView();
     protected abstract void init();
