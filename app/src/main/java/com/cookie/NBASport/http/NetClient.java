@@ -8,5 +8,5 @@ package com.cookie.NBASport.http;/**
  */
 public abstract class NetClient {
     public abstract NetClient addParams(String param);
-    public abstract void send();
+    public abstract void send(NetCallback netCallback);
 }

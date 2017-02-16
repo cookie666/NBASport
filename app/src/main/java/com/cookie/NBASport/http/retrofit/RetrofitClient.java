@@ -12,9 +12,13 @@ import com.cookie.NBASport.bean.NewsItemEntity;
 import com.cookie.NBASport.bean.VideoInfo;
 import com.cookie.NBASport.http.NetCallback;
 import com.cookie.NBASport.http.NetClient;
+import com.cookie.NBASport.http.RequestCallback;
 import com.cookie.NBASport.util.JsonParser;
 import com.google.gson.Gson;
 
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,17 +31,59 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  * Date: 2017-01-19
  */
 public class RetrofitClient extends NetClient {
+    private static RetrofitClient retrofitClient;
+    private String url;
+    private Map<String,Object> params;
     private static Retrofit retrofitGson = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(BuildConfig.TENCENT_SERVER).build();
     static Retrofit retrofitScalars = new Retrofit.Builder().baseUrl(BuildConfig.TENCENT_SERVER).addConverterFactory(ScalarsConverterFactory.create()).build();
+
+/*    public RetrofitClient getInstence(){
+        if(retrofitClient==null){
+            synchronized (this){
+                if(retrofitClient == null){
+                    retrofitClient = new RetrofitClient();
+                }
+            }
+        }
+        return  retrofitClient;
+    }*/
 
     @Override
     public NetClient addParams(String param) {
         return null;
     }
 
-    @Override
-    public void send() {
+    public RetrofitClient addParams(String key,String value) {
+        this.params.put(key,value);
+        return retrofitClient;
     }
+
+    public RetrofitClient Url(String url){
+        this.url = url;
+        return retrofitClient;
+    };
+
+    @Override
+    public void send(final NetCallback netCallback) {
+        RetrofitService retrofitService = retrofitScalars.create(RetrofitService.class);
+        Call<String> call  = retrofitService.request(url,params);
+        call.enqueue(new RequestCallback() {
+
+            @Override
+            public void onSuccess(String result) {
+                netCallback.onSuccess(result);
+            }
+
+            @Override
+            public void onError(String result) {
+                netCallback.onFail(result);
+            }
+        });
+
+    }
+
+
+
 
     public static void getNewsIndex(String type,final NetCallback netCallback){
         RetrofitService retrofitService = retrofitGson.create(RetrofitService.class);

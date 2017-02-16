@@ -5,9 +5,18 @@ package com.cookie.NBASport.http.retrofit;/**
 import com.cookie.NBASport.bean.IndexNewEntity;
 import com.cookie.NBASport.http.NetApi;
 
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 
 /**
  * User: Chen Lin Jiang
@@ -22,6 +31,9 @@ public interface RetrofitService {
 
     @GET(NetApi.NEWS_DETAIL)
     Call<String> getNewsDetail(@Query("column") String column, @Query("articleId") String articleId);
+
+    @POST()
+    Call<String> request(@Url() String url, @QueryMap Map<String,Object> map);
 
     /**
      * 最新方法
