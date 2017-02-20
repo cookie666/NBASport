@@ -2,38 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TabLayout
         android:paddingTop="@dimen/status_bar_height"
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/colorPrimaryDark">
-        <HorizontalScrollView
-            android:id="@+id/indicatorHScrollView"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            >
-            <LinearLayout
-                android:id="@+id/linearIndicator"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content">
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/indicatorLine"
-            android:background="@color/colorAccent"
-            android:layout_width="wrap_content"
-            android:layout_height="2dp">
-
-        </TextView>
-    </LinearLayout>
+        android:background="?colorPrimary"
+        app:tabIndicatorColor="@color/colorAccent"
+        app:tabBackground="?selectableItemBackgroundBorderless"
+        app:tabSelectedTextColor="@color/colorAccent"
+        app:tabTextColor="@android:color/white"
+        app:tabGravity="center"
+        app:tabMode="fixed"
+        android:tag="bg_primary_color"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPagerContent"

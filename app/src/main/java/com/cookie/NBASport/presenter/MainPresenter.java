@@ -47,4 +47,9 @@ public class MainPresenter extends BasePresenter {
         }
         return  listViews;
     }
+
+    public List<String> getIndicatorTitle(){
+        List<String> list = mainModel.getIndicatorTitle();
+        return  list;
+    }
 }

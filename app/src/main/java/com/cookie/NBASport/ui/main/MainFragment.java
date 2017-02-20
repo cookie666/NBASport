@@ -3,11 +3,14 @@ package com.cookie.NBASport.ui.main;/**
  */
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Adapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,14 +31,11 @@ import butterknife.BindView;
  * Date: 2017-01-13
  */
 public class MainFragment extends BaseFragment<MainPresenter> {
-    @BindView(R.id.indicatorHScrollView)
-    HorizontalScrollView indicatorHScrollView;
-    @BindView(R.id.linearIndicator)
-    LinearLayout linearIndicator;
+
     @BindView(R.id.viewPagerContent)
     ViewPager viewPagerContent;
-    @BindView(R.id.indicatorLine)
-    TextView indicatorLine;
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
 
     private List<Fragment> fragmentLists = new ArrayList<Fragment>();
 
@@ -47,43 +47,56 @@ public class MainFragment extends BaseFragment<MainPresenter> {
 
     @Override
     protected void init() {
-        addIndicatorChildView();
-        initIndicatorLine();
         getFragments();
-        initViewPager();
+        tabLayout.setupWithViewPager(viewPagerContent);
+        setupViewPager(viewPagerContent);
+        viewPagerContent.setOffscreenPageLimit(2);
+
+
+        //initViewPager();
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        List<String> listTitle = mPresenter.getIndicatorTitle();
+        Adapter adapter = new Adapter(getChildFragmentManager());
+        adapter.addFragment(fragmentLists.get(0),listTitle.get(0));
+        adapter.addFragment(fragmentLists.get(1), listTitle.get(1));
+        viewPager.setAdapter(adapter);
+    }
+
+
+     class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
+
+        public Adapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitles.get(position);
+        }
     }
 
     @Override
     protected void injectFragment(FragmentComponent fragmentComponent) {
         fragmentComponent.inject(this);
-    }
-
-    private void addIndicatorChildView() {
-        List<View> listViews = mPresenter.getIndicatorViews();
-        for (int i = 0; i < listViews.size(); i++) {
-            listViews.get(i).setTag(i);
-            listViews.get(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int index = (Integer) v.getTag();
-                    viewPagerContent.setCurrentItem(index);
-                }
-            });
-            linearIndicator.addView(listViews.get(i));
-        }
-    }
-
-    private void initIndicatorLine() {
-        ViewTreeObserver viewTreeObserver = linearIndicator.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int[] xy = new int[2];
-                linearIndicator.getChildAt(0).getLocationOnScreen(xy);
-                indicatorLine.setWidth(linearIndicator.getChildAt(0).getWidth());
-                indicatorLine.setTranslationX(xy[0]);
-            }
-        });
     }
 
     private void getFragments() {
@@ -96,44 +109,5 @@ public class MainFragment extends BaseFragment<MainPresenter> {
             topNewsFragment.setArguments(bundle);
             fragmentLists.add(topNewsFragment);
         }
-    }
-
-    private void initViewPager() {
-        viewPagerContent.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
-            @Override
-            public int getCount() {
-                return fragmentLists.size();
-            }
-
-            @Override
-            public Fragment getItem(int position) {
-                return fragmentLists.get(position);
-            }
-        });
-
-        viewPagerContent.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (positionOffsetPixels != 0) {
-                    int everyWidth = linearIndicator.getWidth() / linearIndicator.getChildCount();
-                    int offsetX = everyWidth * (position);
-                    int tempScrollX = (int) (everyWidth * positionOffset);
-
-                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) indicatorLine.getLayoutParams();
-                    layoutParams.setMargins((int) (tempScrollX + offsetX), 0, 0, 0);
-                    indicatorLine.setLayoutParams(layoutParams);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 }
